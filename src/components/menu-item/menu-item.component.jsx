@@ -1,8 +1,9 @@
-import './menu-item.styles.scss'
+import './menu-item.styles.scss';
+import {withRouter} from 'react-router-dom';
 
-const MenuItem = ({item}) => {
+const MenuItem = ({item,history}) => {
     return (
-        <div className={`${item.size} menu-item`}>
+        <div className={`${item.size} menu-item`} onClick ={e => history.push(item.linkUrl)}>
             <div className='background-image'
                   style={{backgroundImage: `url(${item.imageUrl})`}} 
             />
@@ -14,4 +15,5 @@ const MenuItem = ({item}) => {
     )
 }
 
-export default MenuItem
+//With-Router allows us to make use of Route from App component without prop drilling
+export default withRouter(MenuItem);
