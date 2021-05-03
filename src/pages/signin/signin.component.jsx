@@ -1,18 +1,32 @@
 /* eslint-disable no-unused-vars */
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import CustomButton from '../../components/custom-button/custombutton.component';
 import FormInput from '../../components/form-input/forminput.component';
 import './signin.styles.scss';
-import firebase, { auth, signInWithGoogle } from '../../firebase/firebase.utils.js';
+import firebase, { auth, signInWithGoogle, checkUserSignIn } from '../../firebase/firebase.utils.js';
 
 const SignIn = () => {
 
     const [userCredentials,setUserCredentials] = useState({email:'',password:''});
+
+    useEffect(() => {
+        console.log("Call only if email and password is updated")
+    },[userCredentials])
     
 
     const handleSubmit = async e => {
         e.preventDefault();
         const {email, password} = userCredentials;
+
+        try{
+            const {user} = await auth.signInWithEmailAndPassword(email, password);
+
+            alert("Signed In");
+            setUserCredentials({email:'', password: ''});
+        }
+        catch(e){
+            console.log(e);
+        }
     }
 
     const handleChange = (e) => {
@@ -46,7 +60,7 @@ const SignIn = () => {
                 </div>
                 <div className='buttons'>
                     <CustomButton type="submit"> Sign In </CustomButton>
-                    <CustomButton handleClick={signInWithGoogle} isGoogleSignIn> Sign In with Google</CustomButton>
+                    <CustomButton type="button" handleClick={signInWithGoogle} isGoogleSignIn> Sign In with Google</CustomButton>
                 </div>
             </form>
         </div>

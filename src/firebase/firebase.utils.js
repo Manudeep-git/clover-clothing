@@ -18,6 +18,41 @@ firebase.initializeApp(firebaseConfig);
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 
+export const createUserDocument = async(userAuth, otherData) => {
+    if(!userAuth) return;
+
+
+    const userRef = firestore.doc(`users/${userAuth.uid}`);//document reference object
+
+    // await userRef.onSnapshot(doc => {
+    //     snapShot = doc;
+    // }) // not able to get exists prop with onSnapshot if document doesn't exists
+
+    const snapShot = await userRef.get();
+
+    if(!snapShot.exists){
+        const {displayName, email} = userAuth;
+        const createdAt = new Date();
+
+        try{
+            await userRef.set({
+                displayName,
+                email,
+                createdAt,
+                ...otherData
+            })
+        }
+        catch(e){
+            console.log(e);
+        }
+    }
+    return userRef;//always returns the snapShot user reference
+}
+
+export const checkUserSignIn = () => {
+
+}
+
 
 const provider = new firebase.auth.GoogleAuthProvider();
 provider.setCustomParameters({prompt:'select_account'});
